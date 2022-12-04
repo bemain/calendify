@@ -11,5 +11,20 @@ if __name__ == '__main__':
     lessons = list(map(lambda lesson_data: Lesson.from_skola24_data(lesson_data, 2022, 48),
                        skola24_lessons))
 
-    calendarAPI = CalendarApi()
-    calendarAPI.update_calendar("Skola24", lessons)
+    calendarApi = CalendarApi()
+
+    calendars = calendarApi.get_calendars()
+    calendar_names = [calendar["summary"] for calendar in calendars]
+
+    calendar_name = "Skola24"
+    if calendar_name in calendar_names:
+        # Use already existing calendar
+        calendar_id = list(filter(
+            lambda calendar: calendar["summary"] == calendar_name, calendars))[0]["id"]
+    else:
+        # Create calendar
+        print(f"CREATING CALENDAR: {calendar_name}")
+        calendar_id = calendarApi.create_calendar(calendar_name)
+
+    print(f"UPDATING CALENDAR: {calendar_name}")
+    calendarApi.update_calendar(calendar_id, lessons)
