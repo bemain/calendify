@@ -1,4 +1,5 @@
 from __future__ import print_function
+import datetime
 
 import os.path
 
@@ -68,25 +69,17 @@ class CalendarApi:
         }).execute()
         return result["id"]
 
-    def update_calendar(self, calendar_id: str, lessons: list[Lesson]) -> None:
-        try:
-            # Clear
-            events = self.get_events(calendar_id)
-            for event in events:
-                self.service.events().delete(
-                    calendarId=calendar_id, eventId=event["id"]).execute()
-
-            for lesson in lessons:
-                event = self.service.events().insert(calendarId=calendar_id, body={
-                    "description": lesson.description,
-                    "summary": lesson.title,
-                    "start": {"dateTime": lesson.start.isoformat()},
-                    "end": {"dateTime": lesson.end.isoformat()},
-                }).execute()
-
-        except HttpError as error:
-            print('An error occurred: %s' % error)
-
     def get_events(self, calendar_id: str) -> list[dict]:
         return self.service.events().list(
             calendarId=calendar_id).execute().get("items", [])
+
+    def add_event(self, calendar_id: str, summary: str, description: str, start: datetime.datetime, end: datetime.datetime) -> str:
+        return self.service.events().insert(calendarId=calendar_id, body={
+            "summary": summary,
+            "description": description,
+            "start": {"dateTime": start.isoformat()},
+            "end": {"dateTime": end.isoformat()},
+        }).execute()
+
+    def delete_event(self, calendar_id: str, event_id: str):
+        self.service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
