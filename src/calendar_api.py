@@ -51,6 +51,19 @@ class CalendarApi:
     def get_calendars(self):
         return self.service.calendarList().list().execute().get("items", [])
 
+    def get_calendar_id(self, calendar_name: str) -> str:
+        calendars = self.get_calendars()
+        calendar_names = [calendar["summary"] for calendar in calendars]
+
+        if calendar_name in calendar_names:
+            # Use already existing calendar
+            return list(filter(
+                lambda calendar: calendar["summary"] == calendar_name, calendars))[0]["id"]
+        else:
+            # Create calendar
+            print(f"CREATING CALENDAR: {calendar_name}")
+            return self.create_calendar(calendar_name)
+
     def create_calendar(self, calendar_name: str) -> str:
         result = self.service.calendars().insert(body={
             "summary": calendar_name,
