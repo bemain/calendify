@@ -11,8 +11,6 @@ from googleapiclient.errors import HttpError
 
 from lesson import Lesson
 
-import datetime
-
 
 class CalendarApi:
     # If modifying these scopes, delete the file token.json.
@@ -70,25 +68,25 @@ class CalendarApi:
         }).execute()
         return result["id"]
 
-    def update_calendar(self, calendar_id: str, lessons: list[Lesson]):
+    def update_calendar(self, calendar_id: str, lessons: list[Lesson]) -> None:
         try:
             # Clear
-            events = self.service.events().list(
-                calendarId=calendar_id).execute().get("items", [])
+            events = self.get_events(calendar_id)
             for event in events:
                 self.service.events().delete(
                     calendarId=calendar_id, eventId=event["id"]).execute()
-
-            # Create events
-            timezone_delta = datetime.timedelta(hours=1)
 
             for lesson in lessons:
                 event = self.service.events().insert(calendarId=calendar_id, body={
                     "description": lesson.description,
                     "summary": lesson.title,
-                    "start": {"dateTime": (lesson.start - timezone_delta).isoformat() + "Z"},
-                    "end": {"dateTime": (lesson.end - timezone_delta).isoformat() + "Z"},
+                    "start": {"dateTime": lesson.start.isoformat()},
+                    "end": {"dateTime": lesson.end.isoformat()},
                 }).execute()
 
         except HttpError as error:
             print('An error occurred: %s' % error)
+
+    def get_events(self, calendar_id: str) -> list[dict]:
+        return self.service.events().list(
+            calendarId=calendar_id).execute().get("items", [])

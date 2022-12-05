@@ -11,7 +11,7 @@ week: int = 48
 
 if __name__ == '__main__':
     skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
-    skola24_lessons = skola24Api.get_student_lessons(
+    lessons = skola24Api.get_student_lessons(
         "beag", year=year, week=week)
     lessons = list(map(lambda lesson_data: Lesson.from_skola24_data(lesson_data, year, week),
                        skola24_lessons))
