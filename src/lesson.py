@@ -38,7 +38,9 @@ class Lesson:
         )
 
     def __repr__(self) -> str:
-        return f"{self.title} at {self.start}-{self.end}"
+        start = self.start.strftime("%Y-%m-%d %H:%M")
+        end = self.end.strftime("%H:%M")
+        return f"{self.title} at {start} - {end}"
 
 
 def merge_date_and_time(date: datetime.date, time: datetime.time) -> datetime.datetime:

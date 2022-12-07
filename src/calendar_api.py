@@ -10,8 +10,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from lesson import Lesson
-
 
 class CalendarApi:
     # If modifying these scopes, delete the file token.json.
@@ -60,7 +58,7 @@ class CalendarApi:
                 lambda calendar: calendar["summary"] == calendar_name, calendars))[0]["id"]
         else:
             # Create calendar
-            print(f"CREATING CALENDAR: {calendar_name}")
+            print(f"CREATING calendar: {calendar_name}")
             return self.create_calendar(calendar_name)
 
     def create_calendar(self, calendar_name: str) -> str:
@@ -69,9 +67,11 @@ class CalendarApi:
         }).execute()
         return result["id"]
 
-    def get_events(self, calendar_id: str) -> list[dict]:
+    def get_events(self, calendar_id: str, time_min: datetime.datetime | None = None) -> list[dict]:
         return self.service.events().list(
-            calendarId=calendar_id).execute().get("items", [])
+            calendarId=calendar_id,
+            timeMin=time_min.isoformat(),
+        ).execute().get("items", [])
 
     def add_event(self, calendar_id: str, summary: str, description: str, start: datetime.datetime, end: datetime.datetime) -> str:
         return self.service.events().insert(calendarId=calendar_id, body={

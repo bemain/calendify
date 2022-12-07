@@ -1,14 +1,13 @@
+import datetime
 from calendar_api import CalendarApi
 from skola24_api import Skola24Api
-from lesson import Lesson
-
-from enum import Enum
+from lesson import Lesson, date_from_week, merge_date_and_time, timezone
 
 
 calendar_name: str = "Skola24"
 
 year: int = 2022
-week: int = 48
+week: int = 50
 
 
 def index_for_lesson(lesson: Lesson, current_lessons: list[Lesson]) -> int | None:
@@ -26,7 +25,7 @@ if __name__ == '__main__':
     calendarApi = CalendarApi()
     calendar_id = calendarApi.get_calendar_id(calendar_name)
     current_lessons_dict = {data["id"]: Lesson.from_calendar_data(
-        data) for data in calendarApi.get_events(calendar_id)}
+        data) for data in calendarApi.get_events(calendar_id, time_min=merge_date_and_time(date_from_week(year, week, 0), datetime.time(0, 0, 0)).astimezone(timezone))}
     current_lessons = list(current_lessons_dict.values())
 
     # Determine what operations are needed
@@ -41,11 +40,13 @@ if __name__ == '__main__':
 
     # Add
     for lesson in lessons_add:
+        print(f"ADDING event: {lesson}")
         calendarApi.add_event(calendar_id, lesson.title,
                               lesson.description, lesson.start, lesson.end)
 
     # Delete
     for lesson in lessons_delete:
+        print(f"DELETING event: {lesson}")
         event_id = list(current_lessons_dict.keys())[list(
             current_lessons_dict.values()).index(lesson)]
         calendarApi.delete_event(calendar_id, event_id)
