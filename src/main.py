@@ -7,7 +7,7 @@ from lesson import Lesson, date_from_week, merge_date_and_time, timezone
 calendar_name: str = "Skola24"
 
 year: int = 2022
-week: int = 50
+week: int = 51
 
 
 def index_for_lesson(lesson: Lesson, current_lessons: list[Lesson]) -> int | None:
@@ -18,9 +18,9 @@ def index_for_lesson(lesson: Lesson, current_lessons: list[Lesson]) -> int | Non
 
 
 if __name__ == '__main__':
+    # Get target events from Skola24
     skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
-    lessons_data = skola24Api.get_student_lessons(
-        "beag", year=year, week=week)
+    lessons_data = skola24Api.get_student_lessons("beag", year=year, week=week)
 
     blocks = []
     target_lessons = []
@@ -30,16 +30,15 @@ if __name__ == '__main__':
                 blocks.append(data["texts"][0])
             target_lessons.append(Lesson.from_skola24_data(data, year, week))
 
+    # Get current events from calendar
     calendarApi = CalendarApi()
     calendar_id = calendarApi.get_calendar_id(calendar_name)
     events = calendarApi.get_events(
         calendar_id,
-        time_min=merge_date_and_time(date_from_week(
-            year, week, 0), datetime.time(0, 0, 0)).astimezone(timezone),
+        time_min=merge_date_and_time(date_from_week(year, week, 0),
+                                     datetime.time(0, 0, 0)).astimezone(timezone),
     )
-    current_lessons_dict = {
-        data["id"]: Lesson.from_calendar_data(data) for data in events}
-    current_lessons = list(current_lessons_dict.values())
+    current_lessons = [Lesson.from_calendar_data(data) for data in events]
 
     # Determine what operations are needed
     lessons_delete = current_lessons
@@ -60,6 +59,5 @@ if __name__ == '__main__':
     # Delete
     for lesson in lessons_delete:
         print(f"DELETING event: {lesson}")
-        event_id = list(current_lessons_dict.keys())[list(
-            current_lessons_dict.values()).index(lesson)]
+        event_id = lesson.id.index(lesson)
         calendarApi.delete_event(calendar_id, event_id)
