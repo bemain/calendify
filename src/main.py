@@ -19,8 +19,16 @@ def index_for_lesson(lesson: Lesson, current_lessons: list[Lesson]) -> int | Non
 
 if __name__ == '__main__':
     skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
-    target_lessons = skola24Api.get_student_lessons(
+    lessons_data = skola24Api.get_student_lessons(
         "beag", year=year, week=week)
+
+    blocks = []
+    target_lessons = []
+    for data in lessons_data:
+        if len(data["texts"]) <= 3 or data["texts"][0] not in blocks:
+            if len(data["texts"]) > 3:
+                blocks.append(data["texts"][0])
+            target_lessons.append(Lesson.from_skola24_data(data, year, week))
 
     calendarApi = CalendarApi()
     calendar_id = calendarApi.get_calendar_id(calendar_name)

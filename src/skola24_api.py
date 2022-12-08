@@ -126,8 +126,7 @@ class Skola24Api:
         }
         r = self._post("https://web.skola24.se/api/render/timetable", body)
         data_list = r.json()['data']['lessonInfo']
-        return list(map(lambda data: Lesson.from_skola24_data(data, year, week),
-                        data_list))
+        return data_list
 
     def get_timeslot(self, class_name, timeslot):
         ignore_fontsize = 0
