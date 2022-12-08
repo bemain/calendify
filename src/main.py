@@ -22,13 +22,14 @@ if __name__ == '__main__':
     skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
     lessons_data = skola24Api.get_student_lessons("beag", year=year, week=week)
 
-    blocks = []
+    blocks = {}
     target_lessons = []
     for data in lessons_data:
         if len(data["texts"]) <= 3 or data["texts"][0] not in blocks:
+            lesson = Lesson.from_skola24_data(data, year, week)
             if len(data["texts"]) > 3:
-                blocks.append(data["texts"][0])
-            target_lessons.append(Lesson.from_skola24_data(data, year, week))
+                blocks[data["texts"][0]] = lesson
+            target_lessons.append(lesson)
 
     # Get current events from calendar
     calendarApi = CalendarApi()
@@ -59,5 +60,4 @@ if __name__ == '__main__':
     # Delete
     for lesson in lessons_delete:
         print(f"DELETING event: {lesson}")
-        event_id = lesson.id.index(lesson)
-        calendarApi.delete_event(calendar_id, event_id)
+        calendarApi.delete_event(calendar_id, lesson.id)
