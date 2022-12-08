@@ -12,7 +12,7 @@ week: int = 50
 
 def index_for_lesson(lesson: Lesson, current_lessons: list[Lesson]) -> int | None:
     for i, c_lesson in enumerate(current_lessons):
-        if lesson.title == c_lesson.title and str(lesson.start) == str(c_lesson.start) and str(lesson.end) == str(c_lesson.end):
+        if lesson.title == c_lesson.title and lesson.description == c_lesson.description and str(lesson.start) == str(c_lesson.start) and str(lesson.end) == str(c_lesson.end):
             return i
     return None
 
@@ -24,8 +24,13 @@ if __name__ == '__main__':
 
     calendarApi = CalendarApi()
     calendar_id = calendarApi.get_calendar_id(calendar_name)
-    current_lessons_dict = {data["id"]: Lesson.from_calendar_data(
-        data) for data in calendarApi.get_events(calendar_id, time_min=merge_date_and_time(date_from_week(year, week, 0), datetime.time(0, 0, 0)).astimezone(timezone))}
+    events = calendarApi.get_events(
+        calendar_id,
+        time_min=merge_date_and_time(date_from_week(
+            year, week, 0), datetime.time(0, 0, 0)).astimezone(timezone),
+    )
+    current_lessons_dict = {
+        data["id"]: Lesson.from_calendar_data(data) for data in events}
     current_lessons = list(current_lessons_dict.values())
 
     # Determine what operations are needed

@@ -4,11 +4,11 @@ timezone = datetime.timezone(datetime.timedelta(hours=1))
 
 
 class Lesson:
-    def __init__(self, id: str, title: str, description: list[str], start: datetime.datetime, end: datetime.datetime) -> None:
+    def __init__(self, id: str, title: str, description: str, start: datetime.datetime, end: datetime.datetime) -> None:
         self.id = id
 
         self.title: str = title
-        self.description: list[str] = description
+        self.description: str = description
 
         self.start: datetime.time = start
         self.end: datetime.time = end
@@ -20,7 +20,7 @@ class Lesson:
         return cls(
             data["guidId"],
             data["texts"][0],
-            data["texts"][1:],
+            "\n".join(data["texts"][-2:]),
             merge_date_and_time(date, parse_time(data["timeStart"])),
             merge_date_and_time(date, parse_time(data["timeEnd"])),
         )
@@ -30,7 +30,7 @@ class Lesson:
         return cls(
             data["id"],
             data["summary"],
-            "",
+            data["description"],
             datetime.datetime.fromisoformat(
                 data["start"]["dateTime"]).astimezone(timezone),
             datetime.datetime.fromisoformat(
