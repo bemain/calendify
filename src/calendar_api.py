@@ -67,10 +67,11 @@ class CalendarApi:
         }).execute()
         return result["id"]
 
-    def get_events(self, calendar_id: str, time_min: datetime.datetime | None = None) -> list[dict]:
+    def get_events(self, calendar_id: str, time_min: datetime.datetime | None = None, time_max: datetime.datetime | None = None) -> list[dict]:
         return self.service.events().list(
             calendarId=calendar_id,
-            timeMin=time_min.isoformat(),
+            timeMin=time_min.isoformat() if time_min != None else None,
+            timeMax=time_max.isoformat() if time_max != None else None,
         ).execute().get("items", [])
 
     def add_event(self, calendar_id: str, summary: str, description: str, start: datetime.datetime, end: datetime.datetime) -> str:

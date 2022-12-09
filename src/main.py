@@ -7,7 +7,10 @@ from lesson import Lesson, date_from_week, merge_date_and_time, timezone
 calendar_name: str = "Skola24"
 
 year: int = 2022
-week: int = 51
+weeks: list[int] = [49, 50, 51]
+
+skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
+calendarApi = CalendarApi()
 
 
 def index_for_lesson(lesson: Lesson, lessons: list[Lesson], check_description=True) -> int | None:
@@ -17,11 +20,11 @@ def index_for_lesson(lesson: Lesson, lessons: list[Lesson], check_description=Tr
     return None
 
 
-if __name__ == '__main__':
+def update_calendar(calendar_id, year, week):
     # Get target events from Skola24
-    skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
     lessons_data = skola24Api.get_student_lessons("beag", year=year, week=week)
 
+    # Merge lessons in the same block
     blocks = []
     target_lessons = []
     for data in lessons_data:
@@ -40,11 +43,11 @@ if __name__ == '__main__':
             blocks[index].description = "\n".join(block_desc)
 
     # Get current events from calendar
-    calendarApi = CalendarApi()
-    calendar_id = calendarApi.get_calendar_id(calendar_name)
     events = calendarApi.get_events(
         calendar_id,
         time_min=merge_date_and_time(date_from_week(year, week, 0),
+                                     datetime.time(0, 0, 0)).astimezone(timezone),
+        time_max=merge_date_and_time(date_from_week(year, week+1, 0),
                                      datetime.time(0, 0, 0)).astimezone(timezone),
     )
     current_lessons = [Lesson.from_calendar_data(data) for data in events]
@@ -69,3 +72,9 @@ if __name__ == '__main__':
     for lesson in lessons_delete:
         print(f"DELETING event: {lesson}")
         calendarApi.delete_event(calendar_id, lesson.id)
+
+
+if __name__ == '__main__':
+    calendar_id = calendarApi.get_calendar_id(calendar_name)
+    for week in weeks:
+        update_calendar(calendar_id, year, week)
