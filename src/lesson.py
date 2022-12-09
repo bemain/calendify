@@ -20,7 +20,7 @@ class Lesson:
         return cls(
             data["guidId"],
             data["texts"][0],
-            "\n".join(data["texts"][-2:]),
+            "\n".join(data["texts"][-2:]).replace(",", ", "),
             merge_date_and_time(date, parse_time(data["timeStart"])),
             merge_date_and_time(date, parse_time(data["timeEnd"])),
         )
