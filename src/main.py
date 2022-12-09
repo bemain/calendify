@@ -4,7 +4,10 @@ from skola24_api import Skola24Api
 from lesson import Lesson, date_from_week, merge_date_and_time, timezone
 
 
-calendar_name: str = "Skola24"
+calendars: dict[str, str] = {
+    "Benjamin Agardh": "beag",
+    "Na20a": "na20a",
+}
 
 skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
 calendarApi = CalendarApi()
@@ -17,10 +20,11 @@ def index_for_lesson(lesson: Lesson, lessons: list[Lesson], check_description=Tr
     return None
 
 
-def update_calendar(calendar_id, year, week):
+def update_calendar(calendar_id, skola24_id, year, week):
     print(f"UPDATING week {week}")
     # Get target events from Skola24
-    lessons_data = skola24Api.get_student_lessons("beag", year=year, week=week)
+    lessons_data = skola24Api.get_student_lessons(
+        skola24_id, year=year, week=week)
     if lessons_data == None:
         return
 
@@ -73,10 +77,17 @@ def update_calendar(calendar_id, year, week):
         print(f"DELETING event: {lesson}")
         calendarApi.delete_event(calendar_id, lesson.id)
 
+    if len(lessons_add) != 0 or len(lessons_delete) != 0:
+        print("")
+
 
 if __name__ == '__main__':
-    calendar_id = calendarApi.get_calendar_id(calendar_name)
+    for calendar_name, skola24_id in calendars.items():
+        print(f"===== {calendar_name} =====")
+        calendar_id = calendarApi.get_calendar_id(calendar_name)
 
-    now = datetime.datetime.now().isocalendar()
-    for week in range(now.week, now.week + 4):
-        update_calendar(calendar_id, now.year, week)
+        now = datetime.datetime.now().isocalendar()
+        for week in range(now.week, now.week + 4):
+            update_calendar(calendar_id, skola24_id, now.year, week)
+
+        print("\n")

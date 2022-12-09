@@ -58,7 +58,7 @@ class CalendarApi:
                 lambda calendar: calendar["summary"] == calendar_name, calendars))[0]["id"]
         else:
             # Create calendar
-            print(f"CREATING calendar: {calendar_name}")
+            print(f"CREATING calendar: {calendar_name}\n")
             return self.create_calendar(calendar_name)
 
     def create_calendar(self, calendar_name: str) -> str:
