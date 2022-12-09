@@ -10,9 +10,9 @@ year: int = 2022
 week: int = 51
 
 
-def index_for_lesson(lesson: Lesson, current_lessons: list[Lesson]) -> int | None:
-    for i, c_lesson in enumerate(current_lessons):
-        if lesson.title == c_lesson.title and lesson.description == c_lesson.description and str(lesson.start) == str(c_lesson.start) and str(lesson.end) == str(c_lesson.end):
+def index_for_lesson(lesson: Lesson, lessons: list[Lesson], check_description=True) -> int | None:
+    for i, other in enumerate(lessons):
+        if lesson.title == other.title and (not check_description or lesson.description == other.description) and str(lesson.start) == str(other.start) and str(lesson.end) == str(other.end):
             return i
     return None
 
@@ -22,14 +22,22 @@ if __name__ == '__main__':
     skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
     lessons_data = skola24Api.get_student_lessons("beag", year=year, week=week)
 
-    blocks = {}
+    blocks = []
     target_lessons = []
     for data in lessons_data:
-        if len(data["texts"]) <= 3 or data["texts"][0] not in blocks:
-            lesson = Lesson.from_skola24_data(data, year, week)
+        lesson = Lesson.from_skola24_data(data, year, week)
+        index = index_for_lesson(lesson, blocks, check_description=False)
+        if len(data["texts"]) <= 3 or index == None:
             if len(data["texts"]) > 3:
-                blocks[data["texts"][0]] = lesson
+                blocks.append(lesson)
             target_lessons.append(lesson)
+        else:
+            block_desc = blocks[index].description.split("\n")
+            lesson_desc = lesson.description.split("\n")
+            for i, desc in enumerate(lesson_desc):
+                if block_desc[i] != desc:
+                    block_desc[i] += f", {desc}"
+            blocks[index].description = "\n".join(block_desc)
 
     # Get current events from calendar
     calendarApi = CalendarApi()
