@@ -125,7 +125,7 @@ class Skola24Api:
             "customerKey": ""
         }
         r = self._post("https://web.skola24.se/api/render/timetable", body)
-        data_list = r.json()['data']['lessonInfo']
+        data_list = r.json()['data']
         return data_list
 
     def get_timeslot(self, class_name, timeslot):

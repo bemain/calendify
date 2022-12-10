@@ -74,12 +74,13 @@ class CalendarApi:
             timeMax=time_max.isoformat() if time_max != None else None,
         ).execute().get("items", [])
 
-    def add_event(self, calendar_id: str, summary: str, description: str, start: datetime.datetime, end: datetime.datetime) -> str:
+    def add_event(self, calendar_id: str, summary: str, description: str, start: datetime.datetime, end: datetime.datetime, color: int | None = None) -> str:
         return self.service.events().insert(calendarId=calendar_id, body={
             "summary": summary,
             "description": description,
             "start": {"dateTime": start.isoformat()},
             "end": {"dateTime": end.isoformat()},
+            "colorId": color,
         }).execute()
 
     def delete_event(self, calendar_id: str, event_id: str):

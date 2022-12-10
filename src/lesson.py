@@ -4,17 +4,18 @@ timezone = datetime.timezone(datetime.timedelta(hours=1))
 
 
 class Lesson:
-    def __init__(self, id: str, title: str, description: str, start: datetime.datetime, end: datetime.datetime) -> None:
+    def __init__(self, id: str, title: str, description: str, start: datetime.datetime, end: datetime.datetime, color: int | None = None) -> None:
         self.id = id
 
         self.title: str = title
         self.description: str = description
+        self.color: int | None = color
 
         self.start: datetime.time = start
         self.end: datetime.time = end
 
     @classmethod
-    def from_skola24_data(cls, data: dict[str, ], year: int,  week: int):
+    def from_skola24_data(cls, data: dict[str, ], year: int,  week: int, color: str = None):
         date = datetime.date.fromisocalendar(
             year, week, data["dayOfWeekNumber"])
         return cls(
@@ -23,6 +24,7 @@ class Lesson:
             "\n".join(data["texts"][-2:]).replace(",", ", "),
             merge_date_and_time(date, parse_time(data["timeStart"])),
             merge_date_and_time(date, parse_time(data["timeEnd"])),
+            color=color,
         )
 
     @classmethod
@@ -35,12 +37,13 @@ class Lesson:
                 data["start"]["dateTime"]).astimezone(timezone),
             datetime.datetime.fromisoformat(
                 data["end"]["dateTime"]).astimezone(timezone),
+            color=int(data["colorId"]) if "colorId" in data.keys() else None,
         )
 
     def __repr__(self) -> str:
         start = self.start.strftime("%Y-%m-%d %H:%M")
         end = self.end.strftime("%H:%M")
-        return f"{self.title} at {start} - {end}"
+        return f"{self.title} at {start} - {end}" + f" (color id {self.color})" if self.color != None else ""
 
 
 def merge_date_and_time(date: datetime.date, time: datetime.time) -> datetime.datetime:
