@@ -3,25 +3,40 @@ from calendar_api import CalendarApi
 from skola24_api import Skola24Api
 from update_calendar import update_calendar
 
+import yaml
+from yaml.loader import SafeLoader
 
-skola24_ids: list[str] = [
-    "beag",
-]
+
+class Calendar:
+    def __init__(self, skola24_id: str, calendarApi: CalendarApi = CalendarApi(), name: str | None = None) -> None:
+        self.name = name if name != None else f"Schema ({skola24_id})"
+
+        self.skola24_id = skola24_id
+        self.calendar_id = calendarApi.get_calendar_id(self.name)
+
+    def __repr__(self) -> str:
+        return f"Calendar({self.name}, skola24_id: {self.skola24_id}, google_calendar_id: {self.calendar_id})"
+
+
 weeks_to_sync = 4
-
-skola24Api = Skola24Api("lel.skola24.se", "Lars-Erik Larsson-gymnasiet")
-calendarApi = CalendarApi()
 
 
 if __name__ == '__main__':
-    for skola24_id in skola24_ids:
-        calendar_name = f"Schema ({skola24_id})"
-        print(f"===== {calendar_name} =====")
-        calendar_id = calendarApi.get_calendar_id(calendar_name)
+    with open('calendars.yaml') as f:
+        data = yaml.load(f, Loader=SafeLoader)
+
+    skola24Api = Skola24Api(data["domain"], data["school_name"])
+    calendarApi = CalendarApi()
+
+    calendars = [Calendar(skola24_id, calendarApi=calendarApi)
+                 for skola24_id in data["calendars"]]
+
+    for calendar in calendars:
+        print(f"===== {calendar.name} =====")
 
         now = datetime.datetime.now().isocalendar()
         for week in range(now.week, now.week+weeks_to_sync):
-            update_calendar(calendar_id, skola24_id, now.year,
+            update_calendar(calendar.calendar_id, calendar.skola24_id, now.year,
                             week, skola24Api, calendarApi)
 
         print("\n")
