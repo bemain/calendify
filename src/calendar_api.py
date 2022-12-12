@@ -15,9 +15,7 @@ class CalendarApi:
     # If modifying these scopes, delete the file token.json.
     SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-    def __init__(self, calendar_name="Skola24") -> None:
-        self.calendar_name: str = calendar_name
-
+    def __init__(self) -> None:
         self.credentials: Credentials = self.generate_credentials()
         self.service
 
