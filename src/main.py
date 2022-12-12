@@ -9,6 +9,7 @@ from calendar_colors import get_calendar_color
 calendars: dict[str, str] = {
     "Benjamin Agardh": "beag",
     "Na20a": "na20a",
+    "Sa20": "sa20",
 }
 weeks_to_sync = 4
 
