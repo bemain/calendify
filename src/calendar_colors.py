@@ -11,17 +11,25 @@ calendar_colors: dict[str, int | None] = {
     "#FF46FF": 3,  # Svenska som andraspråk
     "#FF8080": 4,
     "#E9C187": 4,  # ?
+    "#F1E8A5": 4,  # GeMu 1
     "#FFFF00": 5,  # Kör
     "#FFFF64": 5,  # Övrig musik
     "#DDDD00": 5,  # 4? Kör2
     "#FFB9FF": 6,  # ? Engelska
     "#FF8000": 6,  # Samhällskunskap
     "#00FFFF": 7,  # Frukostkonsert
+    "#8CFFFF": 7,  # Geografi
     "#FFFFFF": 8,  # Lunch + Gymnasiearbete
     "#0080FF": 9,  # Matte
+    "#000080": 9,  # Historia, MuHi
     "#808000": 10,  # Biologi
     "#008000": 10,
     "#002F17": 10,  # ? Religion
+    "#FF4040": 11,  # Franska 4
+    "#FF1515": 11,  # Tyska 4
+    "#FF1C1C": 11,  # Spanska 3
+    "#FF0000": 11,  # Spanska 1, Tyska 1
+    "#FF0909": 11,  # Franska 1
 }
 
 
