@@ -2,6 +2,7 @@ domain: lel.skola24.se
 school_name: Lars-Erik Larsson-gymnasiet
 
 calendars:
-  - beag
-  - Na20a
-  - B11(Matsalen),B22,B23,B30,B31,B32,B41
+  Benjamin Agardh:
+    id: beag
+  Na20a:
+    id: na20a
