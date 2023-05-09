@@ -15,18 +15,18 @@ class CalendarApi:
     # If modifying these scopes, delete the file token.json.
     SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-    def __init__(self) -> None:
-        self.credentials: Credentials = self.generate_credentials()
+    def __init__(self, token_file: str = "token.json") -> None:
+        self.credentials: Credentials = self.generate_credentials(token_file)
         self.service
 
-    def generate_credentials(self) -> Credentials:
+    def generate_credentials(self, token_file: str) -> Credentials:
         credentials = None
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists('token.json'):
+        if os.path.exists(token_file):
             credentials = Credentials.from_authorized_user_file(
-                'token.json', self.SCOPES)
+                token_file, self.SCOPES)
         # If there are no (valid) credentials available, let the user log in.
         if not credentials or not credentials.valid:
             if credentials and credentials.expired and credentials.refresh_token:

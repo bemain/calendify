@@ -1,3 +1,5 @@
+import sys
+import getopt
 import datetime
 from calendar_api import CalendarApi
 from skola24_api import Skola24Api
@@ -13,8 +15,8 @@ class Calendar:
 
     If [calendar_id] is not specified, tries to automatically determine it based on [name]
     """
-    skola24Api: Skola24Api = Skola24Api()
-    calendarApi: CalendarApi = CalendarApi()
+    skola24Api: Skola24Api
+    calendarApi: CalendarApi
 
     def __init__(self, skola24_id: str, calendar_id: str | None = None, name: str | None = None) -> None:
 
@@ -36,10 +38,23 @@ class Calendar:
 
 
 if __name__ == '__main__':
+    # Parse arguments
+    token_file: str = "token.json"
+
+    opts, args = getopt.getopt(sys.argv[1:], "ht:", ["token="])
+    for opt, arg in opts:
+        if opt == '-h':
+            print('Usage: main.py [-h] [-t=<token.json>]')
+            sys.exit()
+        elif opt in ("-t", "--token"):
+            print("Using token file: ", arg)
+            token_file = arg
+
+    # Create calendars
     with open('calendars.yaml') as f:
         data = yaml.load(f, Loader=SafeLoader)
 
-    Calendar.calendarApi = CalendarApi()
+    Calendar.calendarApi = CalendarApi(token_file=token_file)
     Calendar.skola24Api = Skola24Api(data["domain"], data["school_name"])
 
     weeks_to_sync = 4 if not "weeks_to_sync" in data else data["weeks_to_sync"]
@@ -47,6 +62,7 @@ if __name__ == '__main__':
     calendars = [Calendar(data["calendars"][name]["id"], name=name)
                  for name in data["calendars"]]
 
+    # Update calendars
     for calendar in calendars:
         print(f"===== {calendar.name} =====")
 

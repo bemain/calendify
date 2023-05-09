@@ -20,22 +20,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
         python-version: "3.11"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install pipenv
         pipenv install
+    
     - id: 'auth'
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v1'
       with:
+        token_format: 'access_token'
+        access_token_scopes: https://www.googleapis.com/auth/calendar
         workload_identity_provider: 'projects/54871831620/locations/global/workloadIdentityPools/python-cli-pool/providers/python-cli-provider'
         service_account: 'python-cli@skola24-gcalendar.iam.gserviceaccount.com'
 
     - name: Run main.py
       run: |
-        pipenv run python src/main.py
+        cat "${{ steps.auth.outputs.access_token }}"
+        pipenv run python src/main.py -t "${{ steps.auth.outputs.access_token }}"
