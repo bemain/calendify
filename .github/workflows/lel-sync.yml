@@ -21,6 +21,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Support long pathnames
+      run: sudo git config --system core.longpaths true
+
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
@@ -43,5 +46,5 @@ jobs:
 
     - name: Run main.py
       run: |
-        cat "${{ steps.auth.outputs.access_token }}"
+        echo "${ steps.auth.outputs.access_token }"
         pipenv run python src/main.py -t "${{ steps.auth.outputs.access_token }}"
