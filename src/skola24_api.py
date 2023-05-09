@@ -13,7 +13,7 @@ class SelectionType (Enum):
 
 
 class Skola24Api:
-    def __init__(self, domain, name="", xscope="8a22163c-8662-4535-9050-bc5e1923df48"):
+    def __init__(self, domain: str = "lel.skola24.se", name: str = "", xscope="8a22163c-8662-4535-9050-bc5e1923df48"):
         self.domain = domain
         self._xscope = xscope
 
