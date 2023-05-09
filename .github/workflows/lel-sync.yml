@@ -4,12 +4,14 @@ name: Skola24 to Google Calendar sync
 
 on:
   push:
-  schedule:
+  #schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '30 5,17 * * *'
+    #- cron:  '30 5,17 * * *'
 
 permissions:
-  contents: read
+  contents: 'read'
+  id-token: 'write'
+
 
 jobs:
   build:
@@ -27,6 +29,13 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install pipenv
         pipenv install
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: 'projects/54871831620/locations/global/workloadIdentityPools/python-cli-pool/providers/python-cli-provider'
+        service_account: 'python-cli@skola24-gcalendar.iam.gserviceaccount.com'
+
     - name: Run main.py
       run: |
         pipenv run python src/main.py
