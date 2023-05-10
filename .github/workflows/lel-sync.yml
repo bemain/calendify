@@ -43,8 +43,19 @@ jobs:
         access_token_scopes: https://www.googleapis.com/auth/calendar
         workload_identity_provider: 'projects/54871831620/locations/global/workloadIdentityPools/python-cli-pool/providers/python-cli-provider'
         service_account: 'python-cli@skola24-gcalendar.iam.gserviceaccount.com'
+        access_token_lifetime: '300s'
 
-    - name: Run main.py
+    - name: Echo
       run: |
-        echo "${ steps.auth.outputs.access_token }"
-        pipenv run python src/main.py -t "${{ steps.auth.outputs.access_token }}"
+        echo ${{ steps.auth.outputs.access_token }} > token.json
+        base64 token.json
+        cat ${{ secrets.CREDENTIALS_JSON }}
+
+    - id: run-main
+      name: Run main.py
+      run: |
+        pipenv run python src/main.py -t token.json
+    
+    - name: Cleanup
+      run: |
+        rm token.json
