@@ -46,10 +46,12 @@ jobs:
         access_token_lifetime: '300s'
 
     - name: Echo
+      env:
+        CREDENTIALS: ${{ secrets.CREDENTIALS_JSON }}
       run: |
         echo ${{ steps.auth.outputs.access_token }} > token.json
+        pipenv run python generate_token_file.py "$CREDENTIALS" "${{ steps.auth.outputs.access_token }}" "${{ steps.auth.outputs.access_token_expiration }}" 
         base64 token.json
-        cat ${{ secrets.CREDENTIALS_JSON }}
 
     - id: run-main
       name: Run main.py
