@@ -3,8 +3,6 @@ import json
 
 credentials = json.loads(sys.argv[1])
 
-print(credentials)
-
 token = sys.argv[2]
 #token_expiry = sys.argv[3]
 
