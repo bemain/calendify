@@ -1,7 +1,7 @@
 # The Skola24 domain
 domain: lel.skola24.se
 # The name of the school under the selected [domain]
-school_name: Lars-Erik Larsson-gymnasiet
+school: Lars-Erik Larsson-gymnasiet
 
 # The number of upcoming weeks to sync, including the current
 weeks_to_sync: 4

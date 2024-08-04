@@ -13,7 +13,7 @@ class SelectionType (Enum):
 
 
 class Skola24Api:
-    def __init__(self, domain: str = "lel.skola24.se", name: str = "", xscope="8a22163c-8662-4535-9050-bc5e1923df48"):
+    def __init__(self, domain: str = "lel.skola24.se", school: str = "", xscope="8a22163c-8662-4535-9050-bc5e1923df48"):
         self.domain = domain
         self._xscope = xscope
 
@@ -31,7 +31,7 @@ class Skola24Api:
 
         self.timestamp_re = re.compile('[\d]{1,2}:[\d]{2}')
 
-        self.current_school = self.get_school(name)
+        self.current_school = self.get_school(school)
 
     def _get_render_key(self):
         r = self._get("https://web.skola24.se/api/get/timetable/render/key")

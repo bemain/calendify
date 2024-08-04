@@ -2,7 +2,7 @@ import datetime
 
 from lesson import Lesson, date_from_week, merge_date_and_time, timezone
 from calendar_colors import get_calendar_color
-
+from source import Source
 from skola24_api import Skola24Api
 from calendar_api import CalendarApi
 
@@ -25,36 +25,10 @@ def get_lesson_colors(lessons_data: dict) -> dict[str: str]:
     return lesson_colors
 
 
-def update_calendar(calendar_id: str, skola24_id: str, year: int, week: int, skola24Api: Skola24Api, calendarApi: CalendarApi):
+def update_calendar(source: Source, calendar_id: str, year: int, week: int, calendarApi: CalendarApi):
     print(f"UPDATING week {week}")
     # Get target events from Skola24
-    lessons_data = skola24Api.get_student_lessons(
-        skola24_id, year=year, week=week)
-    if lessons_data["lessonInfo"] == None:
-        print(f"NO LESSONS for week {week}")
-        return
-
-    lesson_colors = get_lesson_colors(lessons_data)
-
-    # Merge lessons in the same block
-    blocks = []
-    target_lessons = []
-    for data in lessons_data["lessonInfo"]:
-        lesson = Lesson.from_skola24_data(
-            data, year, week, color=lesson_colors[data["guidId"]])
-        index = index_for_lesson(
-            lesson, blocks, check_description=False, check_color=False)
-        if len(data["texts"]) <= 3 or index == None:
-            if len(data["texts"]) > 3:
-                blocks.append(lesson)
-            target_lessons.append(lesson)
-        else:
-            block_desc = blocks[index].description.split("\n")
-            lesson_desc = lesson.description.split("\n")
-            for i, desc in enumerate(lesson_desc):
-                if block_desc[i] != desc:
-                    block_desc[i] += f", {desc}"
-            blocks[index].description = "\n".join(block_desc)
+    target_lessons = source.get_lessons(year, week)
 
     # Get current events from calendar
     events = calendarApi.get_events(
