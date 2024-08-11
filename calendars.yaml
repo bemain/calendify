@@ -9,9 +9,9 @@ weeks_to_sync: 4
 # The calendars to sync
 calendars:
   # Desired name of the Google Calendar
-  Benjamin Agardh:
+  Signe Agardh:
     # The Skola24 id
-    id: beag
+    id: siag
   
   Na20a:
     id: na20a

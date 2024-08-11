@@ -4,8 +4,6 @@ import re
 import sys
 from enum import Enum
 
-from lesson import Lesson
-
 
 class SelectionType (Enum):
     CLASS = 0
@@ -103,7 +101,7 @@ class Skola24Api:
         return self.get_lessons(self.get_student_signature(
             student_id), SelectionType.STUDENT_ID, year, week)
 
-    def get_lessons(self, selection: str, selection_type: SelectionType, year: int, week: int) -> list[Lesson]:
+    def get_lessons(self, selection: str, selection_type: SelectionType, year: int, week: int):
         body = {
             "renderKey": self._get_render_key(),
             "host": self.domain,
@@ -126,6 +124,7 @@ class Skola24Api:
         }
         r = self._post("https://web.skola24.se/api/render/timetable", body)
         data_list = r.json()['data']
+        print(r.json())
         return data_list
 
     def get_timeslot(self, class_name, timeslot):
