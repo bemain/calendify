@@ -20,9 +20,8 @@ class Skola24Source(Source):
     
     def get_events(self, year: int, week: int) -> list[Event]:
         lessons_data = self.api.get_student_lessons(self.student_id, year=year, week=week)
-        print(lessons_data)
+        
         if lessons_data["lessonInfo"] == None:
-            print(f"NO LESSONS for week {week}")
             return []
         
         lesson_colors = self._get_lesson_colors(lessons_data)

@@ -76,7 +76,6 @@ class Skola24Api:
         }
         r = self._post(
             "https://web.skola24.se/api/get/timetable/selection", body)
-        print(r.json()["data"])
         self.classes = r.json()['data']['classes']
         return self.classes
 
@@ -124,7 +123,6 @@ class Skola24Api:
         }
         r = self._post("https://web.skola24.se/api/render/timetable", body)
         data_list = r.json()['data']
-        print(r.json())
         return data_list
 
     def get_timeslot(self, class_name, timeslot):

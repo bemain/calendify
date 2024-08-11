@@ -3,7 +3,7 @@ import datetime
 from calendar_api import CalendarApi
 from source import Source
 from event import Event
-from utils import timezone, merge_date_and_time
+from utils import timezone, merge_date_and_time, date_from_week
 
 
 class Target(Source):
@@ -17,7 +17,7 @@ class GoogleCalendar(Target):
         self.id = self.api.get_calendar_id(name)
     
     def get_events(self, year: int, week: int) -> list[Event]:
-        events = self.calendarApi.get_events(
+        events = self.api.get_events(
             self.id,
             time_min=merge_date_and_time(date_from_week(year, week, 0),
                                          datetime.time(0, 0, 0)).astimezone(timezone),

@@ -27,6 +27,9 @@ class Calendar:
         # Get target events from Skola24
         target_lessons = self.source.get_events(year, week)
         current_lessons = self.target.get_events(year, week)
+        
+        if len(target_lessons) == 0:
+            print(f"NO LESSONS for week {week}")
     
         # Determine what operations are needed
         lessons_delete = current_lessons
@@ -49,12 +52,11 @@ class Calendar:
         for lesson in lessons_delete:
             print(f"DELETING event: {lesson}")
             calendarApi.delete_event(calendar_id, lesson.id)
-    
-        if len(lessons_add) != 0 or len(lessons_delete) != 0:
-            print("")
+        
+        print("")
 
     def __repr__(self) -> str:
-        return f"Calendar({self.name}, skola24_id: {self.skola24_id}, google_calendar_id: {self.calendar_id})"
+        return f"Calendar({self.name}, source: {self.source}, target: {self.target})"
 
 
 if __name__ == '__main__':
@@ -72,7 +74,7 @@ if __name__ == '__main__':
         print(f"===== {calendar.name} =====")
 
         now = datetime.datetime.now().isocalendar()
-        for week in range(40, 40+weeks_to_sync):
+        for week in range(now.week, now.week + weeks_to_sync):
             calendar.update(now.year, week)
 
         print("\n")
