@@ -6,7 +6,9 @@ calendars:
   - Chalmers:
     source:
       type: timeedit
+      # The domain used by the university
       domain: chalmers
+      # The id of the desired course
       id: 196837.194
     
     target:
@@ -14,14 +16,14 @@ calendars:
       name: Benjamin Agardh
 
 
-  - Skola24 to Google Calendar:
+  - LEL:
     source:
       type: skola24
-      # The Skola24 domain
+      # The domain used by the school
       domain: lel.skola24.se
       # The name of the school under the selected [domain]
       school: Lars-Erik Larsson-gymnasiet
-      # The Skola24 id
+      # The id of a student or class
       id: siag
     
     target:
