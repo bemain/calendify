@@ -11,7 +11,7 @@ class SelectionType (Enum):
 
 
 class Skola24Api:
-    def __init__(self, domain: str = "lel.skola24.se", school: str = "", xscope="8a22163c-8662-4535-9050-bc5e1923df48"):
+    def __init__(self, domain: str, school: str = "", xscope="8a22163c-8662-4535-9050-bc5e1923df48"):
         self.domain = domain
         self._xscope = xscope
 
@@ -48,8 +48,7 @@ class Skola24Api:
                 "hostName": self.domain
             }
         })
-        self.schools = r.json()[
-            'data']['getTimetableViewerUnitsResponse']['units']
+        self.schools = r.json()['data']['getTimetableViewerUnitsResponse']['units']
         find_school = list(filter(lambda x: x['unitId'] == name, self.schools))
         if len(self.schools) == 1:
             self.current_school = self.schools[0]
