@@ -7,6 +7,12 @@ from utils import timezone, merge_date_and_time, date_from_week
 
 
 class Target(Source):
+    def add_event(self, event: Event):
+        pass
+    
+    def delete_event(self, event: Event):
+        pass
+    
     def __repr__(self) -> str:
         return "Target()"
 
@@ -25,6 +31,12 @@ class GoogleCalendar(Target):
                                          datetime.time(0, 0, 0)).astimezone(timezone),
         )
         return [Event.from_calendar_data(data) for data in events]
+
+    def add_event(self, event: Event):
+        self.api.add_event(self.id, event.title, event.description, event.start, event.end, color=event.color)
+    
+    def delete_event(self, event: Event):
+        self.api.delete_event(self.id, event.id)
     
     def _parse_event(self, data) -> Event:
         return Event(

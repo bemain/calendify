@@ -88,17 +88,18 @@ class Skola24Api:
         return None
 
     def get_student_signature(self, student_id: str):
-        r = self._post(
-            "https://web.skola24.se/api/encrypt/signature", {"signature": student_id})
+        r = self._post("https://web.skola24.se/api/encrypt/signature", {"signature": student_id})
         return r.json()["data"]["signature"]
 
+    def get_school_years(self):
+        r = self._post("https://web.skola24.se/api/get/active/school/years", {"checkSchoolYearsFeatures": False, "hostName": self.domain})
+        return r.json()["data"]["activeSchoolYears"]
+
     def get_class_lessons(self, class_name: str, year: int = 2022, week: int = 1):
-        return self.get_lessons(self.get_class(class_name)[
-            'groupGuid'], SelectionType.CLASS, year, week)
+        return self.get_lessons(self.get_class(class_name)['groupGuid'], SelectionType.CLASS, year, week)
 
     def get_student_lessons(self, student_id: str, year: int = 2022, week: int = 1):
-        return self.get_lessons(self.get_student_signature(
-            student_id), SelectionType.STUDENT_ID, year, week)
+        return self.get_lessons(self.get_student_signature(student_id), SelectionType.STUDENT_ID, year, week)
 
     def get_lessons(self, selection: str, selection_type: SelectionType, year: int, week: int):
         body = {
@@ -108,6 +109,7 @@ class Skola24Api:
             "startDate": None,
             "endDate": None,
             "scheduleDay": 0,
+            "schoolYear": self.get_school_years()[0]["guid"],
             "blackAndWhite": False,
             "width": 10000,
             "height": 10000,
@@ -117,8 +119,8 @@ class Skola24Api:
             "periodText": "",
             "week": week,
             "year": year,
-            "privateFreeTextMode": None,
-            "privateSelectionMode": False,
+            "privateFreeTextMode": False,
+            "privateSelectionMode": None,
             "customerKey": ""
         }
         r = self._post("https://web.skola24.se/api/render/timetable", body)

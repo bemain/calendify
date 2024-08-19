@@ -44,14 +44,12 @@ class Calendar:
         # Add
         for lesson in lessons_add:
             print(f"ADDING event: {lesson}")
-            calendarApi.add_event(calendar_id, lesson.title,
-                                  lesson.description, lesson.start, lesson.end,
-                                  color=lesson.color)
+            self.target.add_event(lesson)
     
         # Delete
         for lesson in lessons_delete:
             print(f"DELETING event: {lesson}")
-            calendarApi.delete_event(calendar_id, lesson.id)
+            self.target.delete_event(lesson)
         
         print("")
 

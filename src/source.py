@@ -2,6 +2,9 @@ import datetime
 
 from skola24_api import Skola24Api
 from event import Event
+from calendar_colors import get_calendar_color
+from utils import merge_date_and_time, parse_time
+from event import index_for_lesson
 
 
 class Source:
@@ -30,7 +33,7 @@ class Skola24Source(Source):
         blocks = []
         lessons = []
         for data in lessons_data["lessonInfo"]:
-            lesson = _parse_lesson(
+            lesson = self._parse_lesson(
                 data, year, week, color=lesson_colors[data["guidId"]])
             index = index_for_lesson(
                 lesson, blocks, check_description=False, check_color=False)
@@ -47,7 +50,7 @@ class Skola24Source(Source):
                 blocks[index].description = "\n".join(block_desc)
         return lessons
 
-    def _get_lesson_colors(lessons_data: dict) -> dict[str: str]:
+    def _get_lesson_colors(self, lessons_data: dict) -> dict[str: str]:
         box_list: list = lessons_data["boxList"]
     
         lesson_colors: dict[str: str] = {}
