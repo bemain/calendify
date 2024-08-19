@@ -1,6 +1,7 @@
 import datetime
 
-timezone = datetime.timezone(datetime.timedelta(hours=1))
+# TODO: Specify in config file or automatically detect. Should adjust to summer time automatically.
+timezone = datetime.timezone(datetime.timedelta(hours=2))
 
 
 def merge_date_and_time(date: datetime.date, time: datetime.time) -> datetime.datetime:
