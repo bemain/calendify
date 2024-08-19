@@ -1,6 +1,6 @@
 import datetime
 
-from calendar_api import CalendarApi
+from gcalendar_api import GoogleCalendarApi
 from source import Source
 from event import Event
 from utils import timezone, merge_date_and_time, date_from_week
@@ -17,7 +17,7 @@ class Target(Source):
         return "Target()"
 
 class GoogleCalendar(Target):
-    api: CalendarApi = CalendarApi()
+    api: GoogleCalendarApi = GoogleCalendarApi()
     
     def __init__(self, name: str):
         self.id = self.api.get_calendar_id(name)

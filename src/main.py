@@ -2,7 +2,7 @@ import datetime
 from event import index_for_lesson
 from source import Source, Skola24Source
 from target import Target, GoogleCalendar
-from calendar_api import CalendarApi
+from gcalendar_api import GoogleCalendarApi
 from utils import date_from_week, merge_date_and_time, timezone
 
 import yaml
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     with open('calendars.yaml') as f:
         data = yaml.load(f, Loader=SafeLoader)
 
-    Calendar.calendarApi = CalendarApi()
+    Calendar.calendarApi = GoogleCalendarApi()
 
     weeks_to_sync = 4 if not "weeks_to_sync" in data else data["weeks_to_sync"]
 
