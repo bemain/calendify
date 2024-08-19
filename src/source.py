@@ -1,9 +1,10 @@
 import datetime
 
 from skola24_api import Skola24Api
+from timeedit_api import TimeEditApi
 from event import Event
 from calendar_colors import get_calendar_color
-from utils import merge_date_and_time, parse_time
+from utils import merge_date_and_time, parse_date, parse_time, date_from_week
 from event import index_for_lesson
 
 
@@ -69,16 +70,35 @@ class Skola24Source(Source):
         return lesson_colors
     
     def _parse_lesson(self, data: dict[str, ], year: int,  week: int, color: str = None) -> Event:
-            date = datetime.date.fromisocalendar(
-                year, week, data["dayOfWeekNumber"])
-            return Event(
-                data["guidId"],
-                data["texts"][0],
-                "\n".join(data["texts"][-2:]).replace(",", ", "),
-                merge_date_and_time(date, parse_time(data["timeStart"])),
-                merge_date_and_time(date, parse_time(data["timeEnd"])),
-                color=color,
-            )
+        date = datetime.date.fromisocalendar(year, week, data["dayOfWeekNumber"])
+        return Event(
+            data["guidId"],
+            data["texts"][0],
+            "\n".join(data["texts"][-2:]).replace(",", ", "),
+            merge_date_and_time(date, parse_time(data["timeStart"])),
+            merge_date_and_time(date, parse_time(data["timeEnd"])),
+            color=color,
+        )
     
         
-            
+class TimeEditSource(Source):
+    def __init__(self, domain: str, course_id: str):
+        self.api: TimeEditApi = TimeEditApi(domain=domain)
+        self.course_id: str = course_id
+    
+    @classmethod
+    def parse(cls, data):
+        return cls(data["domain"], data["id"])
+    
+    def get_events(self, year: int, week: int) -> list[Event]:
+        data = self.api.get_events(self.course_id, (date_from_week(year, week, 6) - datetime.datetime.now().date()).days // 7)
+        return [self._parse_lesson(lesson_data) for lesson_data in data["reservations"]]
+
+    def _parse_lesson(self, data: dict[str, ]) -> Event:
+        return Event(
+            data["id"],
+            ", ".join(filter(lambda e: len(e) > 0, data["columns"][0:4])),
+            "\n".join(filter(lambda e: len(e) > 0, data["columns"][4:])),
+            merge_date_and_time(parse_date(data["startdate"]), parse_time(data["starttime"])),
+            merge_date_and_time(parse_date(data["enddate"]), parse_time(data["endtime"])),
+        )

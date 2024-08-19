@@ -4,11 +4,11 @@ from utils import timezone
 
 
 class Event:
-    def __init__(self, id: str, title: str, description: str, start: datetime.datetime, end: datetime.datetime, color: str | None = None):
+    def __init__(self, id: str, title: str | None, description: str | None, start: datetime.datetime, end: datetime.datetime, color: str | None = None):
         self.id = id
     
-        self.title: str = title
-        self.description: str = description
+        self.title: str | None = title
+        self.description: str | None = description
         self.color: str | None = color
     
         self.start: datetime.time = start

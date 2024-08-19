@@ -1,6 +1,6 @@
 import datetime
 from event import index_for_lesson
-from source import Source, Skola24Source
+from source import Source, Skola24Source, TimeEditSource
 from target import Target, GoogleCalendar
 from gcalendar_api import GoogleCalendarApi
 from utils import date_from_week, merge_date_and_time, timezone
@@ -58,6 +58,7 @@ class Calendar:
 
 def _get_source_by_name(source: str) -> Source:
     if (source == "skola24"): return Skola24Source
+    elif (source == "timeedit"): return TimeEditSource
 
 def _get_target_by_name(target: str) -> Target:
     if (target == "gcalendar"): return GoogleCalendar

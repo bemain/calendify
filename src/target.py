@@ -45,8 +45,8 @@ class GoogleCalendar(Target):
     def _parse_event(self, data) -> Event:
         return Event(
             data["id"],
-            data["summary"],
-            data["description"],
+            data["summary"] if "summary" in data else None,
+            data["description"] if "description" in data else None,
             datetime.datetime.fromisoformat(
                 data["start"]["dateTime"]).astimezone(timezone),
             datetime.datetime.fromisoformat(

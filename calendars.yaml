@@ -3,6 +3,17 @@ weeks_to_sync: 4
 
 # The calendars to sync
 calendars:
+  - Chalmers:
+    source:
+      type: timeedit
+      domain: chalmers
+      id: 196837.194
+    
+    target:
+      type: gcalendar
+      name: Benjamin Agardh
+
+
   - Skola24 to Google Calendar:
     source:
       type: skola24
