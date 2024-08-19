@@ -8,6 +8,10 @@ from event import index_for_lesson
 
 
 class Source:
+    @classmethod
+    def parse(cls, data):
+        pass
+    
     # TODO: Specify start and end date instead
     def get_events(self, year: int, week: int) -> list[Event]:
         pass
@@ -20,6 +24,10 @@ class Skola24Source(Source):
     def __init__(self, domain: str, school: str, student_id: str):
         self.api: Skola24Api = Skola24Api(domain=domain, school=school)
         self.student_id: str = student_id
+    
+    @classmethod
+    def parse(cls, data):
+        return cls(data["domain"], data["school"], data["id"])
     
     def get_events(self, year: int, week: int) -> list[Event]:
         lessons_data = self.api.get_student_lessons(self.student_id, year=year, week=week)

@@ -14,5 +14,5 @@ def parse_time(s: str) -> datetime.time:
 
 def date_from_week(year: int, week: int, weekday: int) -> datetime.date:
     jan1 = datetime.date(year, 1, 1)
-    day_of_year = week * 7 - jan1.weekday() + weekday
+    day_of_year = (week - 1) * 7 - jan1.weekday() + weekday
     return jan1 + datetime.timedelta(days=day_of_year)

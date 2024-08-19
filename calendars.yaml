@@ -1,17 +1,19 @@
-# The Skola24 domain
-domain: lel.skola24.se
-# The name of the school under the selected [domain]
-school: Lars-Erik Larsson-gymnasiet
-
 # The number of upcoming weeks to sync, including the current
 weeks_to_sync: 4
 
 # The calendars to sync
 calendars:
-  # Desired name of the Google Calendar
-  Signe Agardh:
-    # The Skola24 id
-    id: siag
-  
-  Na20a:
-    id: na20a
+  - Skola24 to Google Calendar:
+    source:
+      type: skola24
+      # The Skola24 domain
+      domain: lel.skola24.se
+      # The name of the school under the selected [domain]
+      school: Lars-Erik Larsson-gymnasiet
+      # The Skola24 id
+      id: siag
+    
+    target:
+      type: gcalendar
+      # The name of the created calendar
+      name: Signe Agardh

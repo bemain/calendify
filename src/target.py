@@ -22,6 +22,10 @@ class GoogleCalendar(Target):
     def __init__(self, name: str):
         self.id = self.api.get_calendar_id(name)
     
+    @classmethod
+    def parse(cls, data):
+        return cls(data["name"])
+    
     def get_events(self, year: int, week: int) -> list[Event]:
         events = self.api.get_events(
             self.id,
@@ -30,7 +34,7 @@ class GoogleCalendar(Target):
             time_max=merge_date_and_time(date_from_week(year, week + 1, 0),
                                          datetime.time(0, 0, 0)).astimezone(timezone),
         )
-        return [Event.from_calendar_data(data) for data in events]
+        return [self._parse_event(data) for data in events]
 
     def add_event(self, event: Event):
         self.api.add_event(self.id, event.title, event.description, event.start, event.end, color=event.color)

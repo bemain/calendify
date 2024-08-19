@@ -12,9 +12,8 @@ class Calendar:
     """
     Helper class for matching a Skola24 calendar with a Google Calendar.
     """
-    def __init__(self, source: Source, target: Target, name: str | None = None) -> None:
-
-        self.name = name if name != None else f"Schema ({skola24_id})"
+    def __init__(self, source: Source, target: Target, name: str | None = "Calendar") -> None:
+        self.name = name
         
         self.source: Source = source
         self.target: Target = target
@@ -57,6 +56,12 @@ class Calendar:
         return f"Calendar({self.name}, source: {self.source}, target: {self.target})"
 
 
+def _get_source_by_name(source: str) -> Source:
+    if (source == "skola24"): return Skola24Source
+
+def _get_target_by_name(target: str) -> Target:
+    if (target == "gcalendar"): return GoogleCalendar
+
 if __name__ == '__main__':
     with open('calendars.yaml') as f:
         data = yaml.load(f, Loader=SafeLoader)
@@ -65,8 +70,8 @@ if __name__ == '__main__':
 
     weeks_to_sync = 4 if not "weeks_to_sync" in data else data["weeks_to_sync"]
 
-    calendars = [Calendar(Skola24Source(data["domain"], data["school"], data["calendars"][name]["id"]), GoogleCalendar(name), name=name)
-                 for name in data["calendars"]]
+    calendars = [Calendar(_get_source_by_name(calendar_data["source"]["type"]).parse(calendar_data["source"]), _get_target_by_name(calendar_data["target"]["type"]).parse(calendar_data["target"]), name=list(calendar_data)[0])
+                 for calendar_data in data["calendars"]]
 
     for calendar in calendars:
         print(f"===== {calendar.name} =====")
