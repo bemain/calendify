@@ -13,7 +13,7 @@ calendars:
     
     target:
       type: gcalendar
-      name: Benjamin Agardh
+      name: TKTEM-1
 
 
   - LEL:
