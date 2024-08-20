@@ -1,5 +1,5 @@
 # The number of upcoming weeks to sync, including the current
-weeks_to_sync: 4
+weeks_to_sync: 8
 
 # The calendars to sync
 calendars:
