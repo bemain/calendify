@@ -10,6 +10,7 @@ calendars:
       domain: chalmers
       # The id of the desired course
       id: 196837.194
+      language: sv_SE
     
     target:
       type: gcalendar

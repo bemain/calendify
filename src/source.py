@@ -82,16 +82,17 @@ class Skola24Source(Source):
     
         
 class TimeEditSource(Source):
-    def __init__(self, domain: str, course_id: str):
+    def __init__(self, domain: str, course_id: str, language_code: str = "en_EN"):
         self.api: TimeEditApi = TimeEditApi(domain=domain)
         self.course_id: str = course_id
+        self.language_code: str = language_code
     
     @classmethod
     def parse(cls, data):
-        return cls(data["domain"], data["id"])
+        return cls(data["domain"], data["id"], language_code=data["language"] if "language" in data else "en_EN")
     
     def get_events(self, year: int, week: int) -> list[Event]:
-        data = self.api.get_events(self.course_id, (date_from_week(year, week, 6) - datetime.datetime.now().date()).days // 7)
+        data = self.api.get_events(self.course_id, (date_from_week(year, week, 6) - datetime.datetime.now().date()).days // 7, self.language_code)
         return [self._parse_lesson(lesson_data) for lesson_data in data["reservations"]]
 
     def _parse_lesson(self, data: dict[str, ]) -> Event:
