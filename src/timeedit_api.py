@@ -15,11 +15,11 @@ class TimeEditApi:
     def _get(self, url, params = None):
         return self.session.get(url, headers=self.headers, params=params)
     
-    def get_events(self, course_id: str, weeks_shifted: int, language_code: str):
+    def get_events(self, course_id: str, days_shifted: int, language_code: str):
         r = self._get(f"https://cloud.timeedit.net/{self.domain}/web/public/ri.json", params = {
             "h": "f",
             "h2": "f",
-            "p": f"{weeks_shifted}.w,1.w",
+            "p": f"{days_shifted}.d,1.w",
             "ox": 0,
             "fe": 0,
             "types": 0,
