@@ -8,6 +8,7 @@ google-api-python-client = "*"
 google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
 pyyaml = "*"
+oauth2client = "*"
 
 [dev-packages]
 autopep8 = "*"

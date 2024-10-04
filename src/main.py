@@ -67,8 +67,6 @@ if __name__ == '__main__':
     with open('calendars.yaml') as f:
         data = yaml.load(f, Loader=SafeLoader)
 
-    Calendar.calendarApi = GoogleCalendarApi()
-
     weeks_to_sync = 4 if not "weeks_to_sync" in data else data["weeks_to_sync"]
 
     calendars = [Calendar(_get_source_by_name(calendar_data["source"]["type"]).parse(calendar_data["source"]), _get_target_by_name(calendar_data["target"]["type"]).parse(calendar_data["target"]), name=list(calendar_data)[0])
@@ -76,6 +74,8 @@ if __name__ == '__main__':
 
     for calendar in calendars:
         print(f"===== {calendar.name} =====")
+        if isinstance(calendar.target, GoogleCalendar):
+            print(f"SHAREABLE LINK: {calendar.target.api.get_shareable_link(calendar.target.id)}")
 
         now = datetime.datetime.now().isocalendar()
         for week in range(now.week, now.week + weeks_to_sync):

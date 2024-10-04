@@ -1,5 +1,6 @@
 from __future__ import print_function
 import datetime
+import base64
 
 import os.path
 
@@ -9,6 +10,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 class GoogleCalendarApi:
@@ -27,8 +29,12 @@ class GoogleCalendarApi:
         if os.path.exists('token.json'):
             credentials = Credentials.from_authorized_user_file(
                 'token.json', self.SCOPES)
+        if os.path.exists("service_account_key.json"):
+            credentials = ServiceAccountCredentials.from_json_keyfile_name(
+                "service_account_key.json", self.SCOPES)
+        
         # If there are no (valid) credentials available, let the user log in.
-        if not credentials or not credentials.valid:
+        if not credentials or (credentials is Credentials and not credentials.valid) or (credentials is ServiceAccountCredentials and credentials.invalid):
             if credentials and credentials.expired and credentials.refresh_token:
                 credentials.refresh(Request())
             else:
@@ -58,6 +64,15 @@ class GoogleCalendarApi:
             # Create calendar
             print(f"CREATING calendar: {calendar_name}\n")
             return self.create_calendar(calendar_name)
+    
+    def get_calendar_cid(self, calendar_id: str) -> str:
+        id_bytes = calendar_id.encode('utf-8')
+        cid_base64 = base64.b64encode(id_bytes)
+        cid = cid_base64.decode().rstrip('=')
+        return cid
+
+    def get_shareable_link(self, calendar_id) -> str:
+        return f"https://calendar.google.com/calendar?cid={self.get_calendar_cid(calendar_id)}"
 
     def create_calendar(self, calendar_name: str) -> str:
         result = self.service.calendars().insert(body={
