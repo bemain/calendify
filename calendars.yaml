@@ -10,13 +10,16 @@ calendars:
       domain: chalmers
       # The id of the desired course
       id: 196837.194
+      # The desired language
       language: sv_SE
     
     target:
       type: gcalendar
+      # The name of the created calendar
       name: TKTEM-1
+      # Who has read access to the calendar
       access:
-        - public
+        - public # Allows read access to anyone with the link
 
 
   - LEL:
@@ -31,5 +34,6 @@ calendars:
     
     target:
       type: gcalendar
-      # The name of the created calendar
       name: Signe Agardh
+      access:
+        - signe@example.com # Allows read access to a specific user

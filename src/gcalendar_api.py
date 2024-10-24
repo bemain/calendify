@@ -82,7 +82,7 @@ class GoogleCalendarApi:
             body={
                 "scope": {
                     "type": scope,
-                        "value": scope_value,
+                    "value": scope_value,
                 },
                 "role": role,
             }).execute()
