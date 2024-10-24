@@ -70,8 +70,25 @@ class GoogleCalendarApi:
         cid_base64 = base64.b64encode(id_bytes)
         cid = cid_base64.decode().rstrip('=')
         return cid
+    
+    def get_acl_rules(self, calendar_id: str) -> list:
+        result = self.service.acl().list(calendarId=calendar_id).execute()
+        return result
 
-    def get_shareable_link(self, calendar_id) -> str:
+    def add_acl_rule(self, calendar_id: str, role: str = "reader", scope: str = "default" , scope_value: str | None = None, send_notifications: bool = True) -> str:
+        result = self.service.acl().insert(
+            calendarId=calendar_id,
+            sendNotifications=send_notifications,
+            body={
+                "scope": {
+                    "type": scope,
+                        "value": scope_value,
+                },
+                "role": role,
+            }).execute()
+        return result["id"]
+
+    def get_shareable_link(self, calendar_id: str) -> str:
         return f"https://calendar.google.com/calendar?cid={self.get_calendar_cid(calendar_id)}"
 
     def create_calendar(self, calendar_name: str) -> str:

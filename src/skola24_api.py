@@ -27,7 +27,7 @@ class Skola24Api:
 
         self.session = requests.Session()
 
-        self.timestamp_re = re.compile('[\d]{1,2}:[\d]{2}')
+        self.timestamp_re = re.compile(r'[\d]{1,2}:[\d]{2}')
 
         self.current_school = self.get_school(school)
 

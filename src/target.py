@@ -19,12 +19,22 @@ class Target(Source):
 class GoogleCalendar(Target):
     api: GoogleCalendarApi = GoogleCalendarApi()
     
-    def __init__(self, name: str):
+    def __init__(self, name: str, access: list[str] = []):
         self.id = self.api.get_calendar_id(name)
+        
+        for user in access:
+            if user == "public":
+                self.api.add_acl_rule(self.id, role="reader", scope="default")
+            else:
+                self.api.add_acl_rule(self.id, role="reader", scope="user", scope_value=user)
+
     
     @classmethod
     def parse(cls, data):
-        return cls(data["name"])
+        return cls(
+            data["name"], 
+            access=data["access"] if "access" in data else []
+            )
     
     def get_events(self, year: int, week: int) -> list[Event]:
         events = self.api.get_events(
