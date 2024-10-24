@@ -1,11 +1,21 @@
-# Skola24 to Google Calendar
-A simple application for syncing a Skola24 schedule to a Google Calendar.
+# Calendify
+A simple python script for syncing schedules from different services to a Google Calendar.
 
-Currently features:
+## Features
 - Smart sync; only syncing the events that have been updated since the last run.
-- Event color; mapping Skola24 colors to Google Calendar (approximately, since Google Calendar only supports 10 different colors)
-- Multiple calendars; syncing multiple calendars at once, and specifying unique names for each one.
+- Multiple calendars; syncing multiple calendars at once, and specifying unique names and configurations for each one.
+- Easy sharing; automatically share the google calendar with specific people, or create a shareable link.
+
+## Supported services
+- TimeEdit
+    - Supports multiple languages
+- Skola24
+    - Automatically maps colors (approximately, since Google Calendar only supports 10 different colors)
+
+More are to come! Please feel free to create an issue or a pull request if there is a specific host (or target) service you would like me to add.
 
 ## Why?
-My school uses Skola24 to provide schedules, but Google Calendar for things like tests or homework. 
-I like having everything in the same place, and thus decided to write this simple script so I don't have to use Skola24.
+I personally use Google Calendar, but my university uses TimeEdit to provide schedules. So I wrote this simple script to transform one into the other.
+
+Benjamin Agardh \
+bemain.dev@gmail.com
