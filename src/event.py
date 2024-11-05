@@ -1,8 +1,5 @@
 import datetime
 
-from utils import timezone
-
-
 class Event:
     def __init__(self, id: str, title: str | None, description: str | None, start: datetime.datetime, end: datetime.datetime, color: str | None = None):
         self.id = id
