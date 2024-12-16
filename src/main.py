@@ -74,11 +74,7 @@ if __name__ == '__main__':
 
     for calendar in calendars:
         print(f"===== {calendar.name} =====")
-        if isinstance(calendar.target, GoogleCalendar):
-            print(f"SHAREABLE LINK: {calendar.target.api.get_shareable_link(calendar.target.id)}")
-            access = [f"{user["id"]} | {user["role"]}" for user in calendar.target.api.get_acl_rules(calendar.target.id)["items"]]
-            print(f"ACCESS: {access}")
-
+        
         now = datetime.datetime.now().isocalendar()
         for week in range(now.week, now.week + weeks_to_sync):
             calendar.update(now.year, week)

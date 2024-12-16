@@ -19,7 +19,8 @@ calendars:
       name: TKTEM-1
       # Who has read access to the calendar
       access:
-        - public # Allows read access to anyone with the link
+        - benjamin.agardh@gmail.com: writer # Allows write access to a specific user
+        - public: reader # Allows read access to anyone with the link
 
 
   - LEL:
@@ -36,4 +37,4 @@ calendars:
       type: gcalendar
       name: Signe Agardh
       access:
-        - signe@example.com # Allows read access to a specific user
+        - signe@example.com: reader # Allows read access to a specific user

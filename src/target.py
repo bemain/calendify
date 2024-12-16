@@ -19,23 +19,34 @@ class Target(Source):
 class GoogleCalendar(Target):
     api: GoogleCalendarApi = GoogleCalendarApi()
     
-    def __init__(self, name: str, access: list[str] = []):
-        self.id = self.api.get_calendar_id(name)
+    def __init__(self, id: str, access: dict[str, str] = []):
+        self.id = id
         
         # Give specified users access
         # TODO: Remove access for users not in list
-        for user in access:
+        for user, role in access.items():
+            if role not in ["none", "freeBusyReader", "reader", "writer", "owner"]: 
+                print(f"[GCALENDAR] Error: Invalid role '{role}' for user '{user}'")
+                continue
             if user == "public":
-                self.api.add_acl_rule(self.id, role="reader", scope="default")
+                self.api.add_acl_rule(self.id, role=role, scope="default")
             else:
-                self.api.add_acl_rule(self.id, role="reader", scope="user", scope_value=user)
+                self.api.add_acl_rule(self.id, role=role, scope="user", scope_value=user)
 
     
     @classmethod
     def parse(cls, data):
+        id = cls.api.get_calendar_id(data["name"])
+
+        rules = {}
+        if "access" in data:
+            rules={list(rule.keys())[0] if isinstance(rule, dict) else rule: list(rule.values())[0] if isinstance(rule, dict) else "reader" for rule in data["access"]} if "access" in data else {}
+            if "public" in rules.keys(): print(f"[GCALENDAR] Shareable link: {cls.api.get_shareable_link(id)}")
+            print(f"[GCALENDAR] Access: {rules}")
+
         return cls(
-            data["name"], 
-            access=data["access"] if "access" in data else []
+            id, 
+            access=rules
             )
     
     def get_events(self, year: int, week: int) -> list[Event]:
