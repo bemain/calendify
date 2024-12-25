@@ -1,11 +1,9 @@
 # Google Calendar API
 credentials.json
 token.json
+service_account_key.json
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-
-example.json
