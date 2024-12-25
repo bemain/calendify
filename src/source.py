@@ -4,7 +4,7 @@ from skola24_api import Skola24Api
 from timeedit_api import TimeEditApi
 from event import Event
 from calendar_colors import get_calendar_color
-from utils import merge_date_and_time, parse_date, parse_time, date_from_week
+from utils import merge_date_and_time, parse_date, parse_time, date_from_week, parse_timezone
 from event import index_for_lesson
 
 
@@ -22,13 +22,18 @@ class Source:
 
 
 class Skola24Source(Source):
-    def __init__(self, domain: str, school: str, student_id: str):
+    def __init__(self, domain: str, school: str, student_id: str, timezone: datetime.timezone = datetime.timezone.utc):
         self.api: Skola24Api = Skola24Api(domain=domain, school=school)
         self.student_id: str = student_id
+        self.timezone: datetime.timezone = timezone
     
     @classmethod
     def parse(cls, data):
-        return cls(data["domain"], data["school"], data["id"])
+        return cls(data["domain"], 
+                   data["school"], 
+                   data["id"],
+                   timezone=datetime.timezone.utc if "timezone" not in data else parse_timezone(data["timezone"])
+                   )
     
     def get_events(self, year: int, week: int) -> list[Event]:
         lessons_data = self.api.get_student_lessons(self.student_id, year=year, week=week)
@@ -75,21 +80,25 @@ class Skola24Source(Source):
             data["guidId"],
             data["texts"][0],
             "\n".join(data["texts"][-2:]).replace(",", ", "),
-            merge_date_and_time(date, parse_time(data["timeStart"])),
-            merge_date_and_time(date, parse_time(data["timeEnd"])),
+            merge_date_and_time(date, parse_time(data["timeStart"], timezone=self.timezone)),
+            merge_date_and_time(date, parse_time(data["timeEnd"], timezone=self.timezone)),
             color=color,
         )
     
         
 class TimeEditSource(Source):
-    def __init__(self, domain: str, course_id: str, language_code: str = "en_EN"):
+    def __init__(self, domain: str, course_id: str, language_code: str = "en_EN", timezone: datetime.timezone = datetime.timezone.utc):
         self.api: TimeEditApi = TimeEditApi(domain=domain)
         self.course_id: str = course_id
         self.language_code: str = language_code
+        self.timezone: datetime.timezone = timezone
     
     @classmethod
     def parse(cls, data):
-        return cls(data["domain"], data["id"], language_code=data["language"] if "language" in data else "en_EN")
+        return cls(data["domain"], data["id"], 
+                   language_code=data["language"] if "language" in data else "en_EN",
+                   timezone=datetime.timezone.utc if "timezone" not in data else parse_timezone(data["timezone"])
+                   )
     
     def get_events(self, year: int, week: int) -> list[Event]:
         data = self.api.get_events(self.course_id, (date_from_week(year, week, 0) - datetime.datetime.now().date()).days, self.language_code)
@@ -100,6 +109,6 @@ class TimeEditSource(Source):
             data["id"],
             ", ".join(filter(lambda e: len(e) > 0, data["columns"][0:4])),
             "\n".join(filter(lambda e: len(e) > 0, data["columns"][4:])),
-            merge_date_and_time(parse_date(data["startdate"]), parse_time(data["starttime"])),
-            merge_date_and_time(parse_date(data["enddate"]), parse_time(data["endtime"])),
+            merge_date_and_time(parse_date(data["startdate"]), parse_time(data["starttime"], self.timezone)),
+            merge_date_and_time(parse_date(data["enddate"]), parse_time(data["endtime"], self.timezone)),
         )

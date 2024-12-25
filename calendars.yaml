@@ -5,6 +5,7 @@ weeks_to_sync: 8
 calendars:
   - Chalmers:
     source:
+      # Supported sources: timeedit, skola24
       type: timeedit
       # The domain used by the university
       domain: chalmers
@@ -12,11 +13,16 @@ calendars:
       id: 196837.194
       # The desired language
       language: sv_SE
+      # The timezone that received events are in
+      timezone: CET
     
     target:
+      # Supported targets: gcalendar
       type: gcalendar
       # The name of the created calendar
       name: TKTEM-1
+      # The desired timezone of the created calendar
+      timezone: CET
       # Who has read access to the calendar
       access:
         - benjamin.agardh@gmail.com: writer # Allows write access to a specific user
@@ -32,9 +38,12 @@ calendars:
       school: Lars-Erik Larsson-gymnasiet
       # The id of a student or class
       id: siag
+      timezeone: CET
     
     target:
       type: gcalendar
       name: Signe Agardh
+      timezone: 3
       access:
+        - public: reader
         - signe@example.com: reader # Allows read access to a specific user

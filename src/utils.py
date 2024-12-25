@@ -1,7 +1,5 @@
 import datetime
-
-# TODO: Specify in config file or automatically detect. Should adjust to summer time automatically.
-timezone = datetime.timezone(datetime.timedelta(hours=2))
+from zoneinfo import ZoneInfo
 
 
 def merge_date_and_time(date: datetime.date, time: datetime.time) -> datetime.datetime:
@@ -12,10 +10,18 @@ def parse_date(s: str) -> datetime.date:
     times = s.split("-")
     return datetime.date(int(times[0]), month=int(times[1]), day=int(times[2]))
 
-def parse_time(s: str) -> datetime.time:
+def parse_time(s: str, timezone: datetime.timezone = datetime.timezone.utc) -> datetime.time:
     times = s.split(":")
     return datetime.time(hour=int(times[0]), minute=int(times[1]), second=int(times[2]) if len(times) >= 3 else 0, tzinfo=timezone)
 
+def parse_timezone(s) -> datetime.timezone:
+    if isinstance(s, int): 
+        return datetime.timezone(datetime.timedelta(hours=int(s)))
+    
+    if isinstance(s, str): 
+        return ZoneInfo(s)
+    
+    return None
 
 def date_from_week(year: int, week: int, weekday: int) -> datetime.date:
     jan1 = datetime.date(year, 1, 1)

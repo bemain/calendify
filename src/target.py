@@ -3,7 +3,8 @@ import datetime
 from gcalendar_api import GoogleCalendarApi
 from source import Source
 from event import Event
-from utils import timezone, merge_date_and_time, date_from_week
+from utils import merge_date_and_time, date_from_week, parse_timezone
+from zoneinfo import ZoneInfo
 
 
 class Target(Source):
@@ -19,8 +20,10 @@ class Target(Source):
 class GoogleCalendar(Target):
     api: GoogleCalendarApi = GoogleCalendarApi()
     
-    def __init__(self, id: str, access: dict[str, str] = []):
+    def __init__(self, id: str, access: dict[str, str] = [], timezone: datetime.timezone = datetime.timezone.utc):
         self.id = id
+        
+        self.timezone = timezone
         
         # Give specified users access
         # TODO: Remove access for users not in list
@@ -46,16 +49,17 @@ class GoogleCalendar(Target):
 
         return cls(
             id, 
-            access=rules
+            access=rules,
+            timezone=datetime.timezone.utc if "timezone" not in data else parse_timezone(data["timezone"]),
             )
     
     def get_events(self, year: int, week: int) -> list[Event]:
         events = self.api.get_events(
             self.id,
             time_min=merge_date_and_time(date_from_week(year, week, 0),
-                                         datetime.time(0, 0, 0)).astimezone(timezone),
+                                         datetime.time(0, 0, 0)).astimezone(self.timezone),
             time_max=merge_date_and_time(date_from_week(year, week + 1, 0),
-                                         datetime.time(0, 0, 0)).astimezone(timezone),
+                                         datetime.time(0, 0, 0)).astimezone(self.timezone),
         )
         return [self._parse_event(data) for data in events]
 
@@ -71,9 +75,9 @@ class GoogleCalendar(Target):
             data["summary"] if "summary" in data else None,
             data["description"] if "description" in data else None,
             datetime.datetime.fromisoformat(
-                data["start"]["dateTime"]).astimezone(timezone),
+                data["start"]["dateTime"]).astimezone(self.timezone),
             datetime.datetime.fromisoformat(
-                data["end"]["dateTime"]).astimezone(timezone),
+                data["end"]["dateTime"]).astimezone(self.timezone),
             color=int(data["colorId"]) if "colorId" in data.keys() else None,
         )
         
