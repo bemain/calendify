@@ -74,7 +74,7 @@ if __name__ == '__main__':
         print(f"===== {calendar.name} =====")
 
         now = datetime.datetime.now().isocalendar()
-        weeks_this_year = datetime.date(year, 12, 28).isocalendar()[1]
+        weeks_this_year = datetime.date(now.year, 12, 28).isocalendar()[1]
         for week in range(now.week, now.week + weeks_to_sync):
             year = now.year + week // weeks_this_year
             week %= weeks_this_year
