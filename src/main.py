@@ -2,8 +2,6 @@ import datetime
 from event import index_for_lesson
 from source import Source, Skola24Source, TimeEditSource
 from target import Target, GoogleCalendar
-from gcalendar_api import GoogleCalendarApi
-from utils import date_from_week, merge_date_and_time, timezone
 
 import yaml
 from yaml.loader import SafeLoader
@@ -74,9 +72,12 @@ if __name__ == '__main__':
 
     for calendar in calendars:
         print(f"===== {calendar.name} =====")
-        
+
         now = datetime.datetime.now().isocalendar()
+        weeks_this_year = datetime.date(year, 12, 28).isocalendar()[1]
         for week in range(now.week, now.week + weeks_to_sync):
-            calendar.update(now.year, week)
+            year = now.year + week // weeks_this_year
+            week %= weeks_this_year
+            calendar.update(year, week)
 
         print("\n")
