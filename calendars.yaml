@@ -10,7 +10,7 @@ calendars:
       # The domain used by the university
       domain: chalmers
       # The id of the desired course
-      id: 196837.194
+      id: 977.8
       # The desired language
       language: sv_SE
       # The timezone that received events are in, either as a lookup key in the [IANA time zone database](https://www.iana.org/time-zones), or an integer specifying the deviation from UTC in hours.
@@ -20,7 +20,7 @@ calendars:
       # Supported targets: gcalendar
       type: gcalendar
       # The name of the created calendar
-      name: TKTEM-1
+      name: TKTEM-2
       # The desired timezone of the created calendar
       timezone: CET
       # Who has read access to the calendar
