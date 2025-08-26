@@ -32,9 +32,10 @@ calendar_colors: dict[str, int | None] = {
     "#FF0909": 11,  # Franska 1
 }
 
+
 # TODO: Write an algorithm to find the closest correllation.
 def get_calendar_color(html_color: str) -> int | None:
-    if (html_color in calendar_colors.keys()):
+    if html_color in calendar_colors.keys():
         return calendar_colors[html_color]
     print(f"COLOR has no match in Google Calendar's colors: {html_color}")
     return None

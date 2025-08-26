@@ -17,5 +17,21 @@ More are to come! Please feel free to create an issue or a pull request if there
 ## Why?
 I personally use Google Calendar, but my university uses TimeEdit to provide schedules. So I wrote this simple script to transform one into the other.
 
+## Development
+This project uses [uv](https://docs.astral.sh/uv/) to manage dependencies.
+
+Run the app
+```shell
+uv run calendify
+```
+
+To reload whenever the code changes
+```shell
+uv run calendify --reload
+```
+
+## Contact
+If you have any questions regarding this project or want to contribute, don't hesitate to reach out on GitHub or via email.
+
 Benjamin Agardh \
 bemain.dev@gmail.com
